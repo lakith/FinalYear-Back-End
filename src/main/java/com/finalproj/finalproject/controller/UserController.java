@@ -7,12 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import java.security.Principal;
+import javax.validation.constraints.Pattern;
 
 @RestController
 @RequestMapping("/staffUser")
+@CrossOrigin
 public class UserController {
 
     @Autowired
@@ -25,7 +27,23 @@ public class UserController {
     }
 
     @PostMapping("/addNewUser")
-    public ResponseEntity saveNewUser(@RequestBody @Valid UserDTO userDTO, Principal principal) throws Exception {
+    public ResponseEntity saveNewUser(
+            @RequestParam MultipartFile profilePic,
+            @RequestParam(required = true)  String name,
+            @Valid @Pattern (regexp = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$", message = "Email Must be in Correct Format")@RequestParam(required = true)  String email,
+            @RequestParam(required = true)  String password,
+            @RequestParam(required = true)  String userName,
+            @RequestParam(required = true)  int roleId
+            ) throws Exception {
+
+        UserDTO userDTO = new UserDTO();
+        userDTO.setName(name);
+        userDTO.setEmail(email);
+        userDTO.setPassword(password);
+        userDTO.setUsername(userName);
+        userDTO.setProfilePic(profilePic);
+        userDTO.setRoleId(roleId);
+
         return userService.saveNewUser(userDTO);
     }
 

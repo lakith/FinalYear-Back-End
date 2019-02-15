@@ -13,7 +13,6 @@ import com.finalproj.finalproject.repository.UserRepository;
 import com.finalproj.finalproject.repository.UserRoleRepository;
 import com.finalproj.finalproject.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -38,6 +37,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private final BCryptPasswordEncoder bCryptPasswordEncoder ;
 
+    @Autowired
+    private AmazonClient amazonClient;
+
     public UserServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
@@ -45,7 +47,8 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResponseEntity<?> saveNewUser(UserDTO userDTO) throws Exception {
         ResponseModel responseModel = new ResponseModel();
-        if(userRepository.getUserByUsernameForSignUp(userDTO.getUsername()).isPresent()){
+        Optional<User> userOpt = userRepository.getUserByUsernameForSignUp(userDTO.getUsername());
+        if(userOpt.isPresent()){
             responseModel.setMessage("Username Already Exists!");
             responseModel.setStatus(false);
             return new ResponseEntity<>(responseModel, HttpStatus.BAD_REQUEST);
@@ -64,6 +67,14 @@ public class UserServiceImpl implements UserService {
             return new ResponseEntity<>(responseModel,HttpStatus.BAD_REQUEST);
         }
 
+        if(userDTO.getProfilePic().isEmpty()){
+            responseModel.setMessage("Please Upload a profile pic");
+            responseModel.setStatus(false);
+            return new ResponseEntity<>(responseModel,HttpStatus.BAD_REQUEST);
+        }
+
+        String profilePic = amazonClient.uploadFile(userDTO.getProfilePic(),true);
+
         String encryptedPassword = bCryptPasswordEncoder.encode(userDTO.getPassword());
 
         User newUser = new User();
@@ -72,6 +83,7 @@ public class UserServiceImpl implements UserService {
         newUser.setEmail(userDTO.getEmail());
         newUser.setUserRole(optionalUserRole.get());
         newUser.setPassword(encryptedPassword);
+        newUser.setProfilePic(profilePic);
 
         try {
             userRepository.save(newUser);
@@ -111,12 +123,17 @@ public class UserServiceImpl implements UserService {
             authToken.setAccessToken(accessToken);
             authToken.setRefreshToken(refreshToken);
 
+            String profileUrl = amazonClient.getUrlFromFileName(optionalUser.get().getProfilePic());
+
             DisplayUserDTO displayUserDTO = new DisplayUserDTO();
             displayUserDTO.setAuthToken(authToken);
             displayUserDTO.setEmail(optionalUser.get().getEmail());
             displayUserDTO.setUserId(optionalUser.get().getUserId());
             displayUserDTO.setName(optionalUser.get().getName());
             displayUserDTO.setUserName(optionalUser.get().getUsername());
+            displayUserDTO.setUserRole(optionalUser.get().getUserRole());
+            displayUserDTO.setProfileUrl(profileUrl);
+
 
             return new ResponseEntity<>(displayUserDTO, HttpStatus.OK);
             } else {

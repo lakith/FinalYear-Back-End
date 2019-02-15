@@ -32,6 +32,8 @@ public class User {
 
     private boolean active = false;
 
+    private String profilePic;
+
     private String refeshToken;
 
     @NonNull
@@ -42,6 +44,14 @@ public class User {
 
 
     public User() {
+    }
+
+    public String getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(String profilePic) {
+        this.profilePic = profilePic;
     }
 
     public String getUsername() {

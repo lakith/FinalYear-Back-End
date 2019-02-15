@@ -1,7 +1,7 @@
 package com.finalproj.finalproject.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.lang.NonNull;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -25,11 +25,20 @@ public class UserDTO {
     @Column(unique = true)
     private String username;
 
+    private MultipartFile profilePic;
 
     @NonNull
     private int roleId;
 
     public UserDTO() {
+    }
+
+    public MultipartFile getProfilePic() {
+        return profilePic;
+    }
+
+    public void setProfilePic(MultipartFile profilePic) {
+        this.profilePic = profilePic;
     }
 
     public String getUsername() {
