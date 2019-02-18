@@ -1,6 +1,7 @@
 package com.finalproj.finalproject.model;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "event")
@@ -38,9 +39,21 @@ public class Event {
 
     private boolean eventPublic;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_special_guests")
+    private EventSpecialGuests eventSpecialGuests;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_genaral_guests")
+    private EventGenaralGuests eventGenaralGuests;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_front_page")
+    private EventFrontPage eventFrontPage;
 
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_comments")
+    private List<EventComments> eventComments;
 
 
 

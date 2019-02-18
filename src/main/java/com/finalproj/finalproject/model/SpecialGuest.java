@@ -1,5 +1,6 @@
 package com.finalproj.finalproject.model;
 
+import com.finalproj.finalproject.Enums.MealPreferance;
 import com.finalproj.finalproject.Enums.UserConfirmation;
 
 import javax.persistence.*;
@@ -12,10 +13,15 @@ public class SpecialGuest {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int specialGuestId;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "special_user")
     private User specialUser;
 
     @Enumerated(EnumType.STRING)
     private UserConfirmation confirmation;
+
+    @Enumerated(EnumType.STRING)
+    private MealPreferance mealPreferance;
 
     public SpecialGuest() {
     }
