@@ -1,14 +1,8 @@
-package com.finalproj.finalproject.model;
+package com.finalproj.finalproject.dto;
 
-import javax.persistence.*;
+public class PaidEventDetailsDto {
 
-@Entity
-@Table(name = "paid_event")
-public class PaidEvent {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private int paidEventId;
+    private int eventId;
 
     private boolean sellOnlineByUser = false;
 
@@ -28,16 +22,7 @@ public class PaidEvent {
 
     private double price;
 
-
-    public PaidEvent() {
-    }
-
-    public int getPaidEventId() {
-        return paidEventId;
-    }
-
-    public void setPaidEventId(int paidEventId) {
-        this.paidEventId = paidEventId;
+    public PaidEventDetailsDto() {
     }
 
     public boolean isSellOnlineByUser() {
@@ -110,5 +95,13 @@ public class PaidEvent {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public int getEventId() {
+        return eventId;
+    }
+
+    public void setEventId(int eventId) {
+        this.eventId = eventId;
     }
 }

@@ -5,6 +5,7 @@ import org.springframework.lang.NonNull;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -41,7 +42,10 @@ public class User {
     @JoinColumn(name = "roleId")
     private UserRole userRole;
 
-
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event list")
+    @JsonIgnore
+    private List<Event> eventList;
 
     public User() {
     }
@@ -116,5 +120,13 @@ public class User {
 
     public void setUserRole(UserRole userRole) {
         this.userRole = userRole;
+    }
+
+    public List<Event> getEventList() {
+        return eventList;
+    }
+
+    public void setEventList(List<Event> eventList) {
+        this.eventList = eventList;
     }
 }

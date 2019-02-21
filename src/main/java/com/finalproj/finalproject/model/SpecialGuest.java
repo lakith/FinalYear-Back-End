@@ -49,4 +49,12 @@ public class SpecialGuest {
     public void setConfirmation(UserConfirmation confirmation) {
         this.confirmation = confirmation;
     }
+
+    public MealPreferance getMealPreferance() {
+        return mealPreferance;
+    }
+
+    public void setMealPreferance(MealPreferance mealPreferance) {
+        this.mealPreferance = mealPreferance;
+    }
 }

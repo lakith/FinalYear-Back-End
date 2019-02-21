@@ -1,6 +1,7 @@
 package com.finalproj.finalproject.model;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 
 @Entity
 @Table(name = "event_Types")
@@ -10,6 +11,7 @@ public class EventType {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int eventTypeId;
 
+    @NotNull
     private String eventTypeName;
 
 

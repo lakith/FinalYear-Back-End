@@ -151,12 +151,12 @@ public class UserServiceImpl implements UserService {
     public ResponseEntity<?> activateAUser(int userId){
         Optional<User> optionalUser = userRepository.findById(userId);
         if(!optionalUser.isPresent()){
-            return new ResponseEntity<>(new ResponseModel("Invalid User Id",false),HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(new ResponseModel("Invalid User Id","Invalid User Id",false),HttpStatus.BAD_REQUEST);
         } else{
             User user = optionalUser.get();
             user.setActive(true);
             userRepository.save(user);
-            return new ResponseEntity<>(new ResponseModel("User Activated successfully",true),HttpStatus.OK);
+            return new ResponseEntity<>(new ResponseModel("User Activated successfully","User Activated successfully",true),HttpStatus.OK);
         }
     }
 
@@ -166,7 +166,7 @@ public class UserServiceImpl implements UserService {
         grantedAuthorities.add(new SimpleGrantedAuthority("ROLE_"+user.getUserRole().getRoleType()));
         String accessToken = null;
         try {
-            accessToken = JwtGenerator.genarateAccessJWT(Integer.toString(user.getUserId()), user.getUsername(), grantedAuthorities, ApiParameters.JWT_EXPIRATION, ApiParameters.JWT_SECRET);
+            accessToken = JwtGenerator.genarateAccessJWT( user.getUsername(),Integer.toString(user.getUserId()), grantedAuthorities, ApiParameters.JWT_EXPIRATION, ApiParameters.JWT_SECRET);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -176,7 +176,7 @@ public class UserServiceImpl implements UserService {
     private String createRefreshToken(User user) {
         List<SimpleGrantedAuthority> grantedAuthorityList = new ArrayList<>();
         grantedAuthorityList.add(new SimpleGrantedAuthority("ROLE_" + user.getUserRole().getRoleType()));
-        String refreshToken = JwtGenerator.generateRefreshToken(Integer.toString(user.getUserId()), user.getUsername(),grantedAuthorityList,ApiParameters.REFRESH_TOKEN_EXPIRATION,ApiParameters.JWT_SECRET);
+        String refreshToken = JwtGenerator.generateRefreshToken(user.getUsername(),Integer.toString(user.getUserId()),grantedAuthorityList,ApiParameters.REFRESH_TOKEN_EXPIRATION,ApiParameters.JWT_SECRET);
         try {
             int i = userRepository.updateRefreshToken(user.getUsername(), refreshToken);
         } catch (Exception e) {
