@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class GenaralGuestMessages {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int genaralGuestMessage;
 
     private String message;

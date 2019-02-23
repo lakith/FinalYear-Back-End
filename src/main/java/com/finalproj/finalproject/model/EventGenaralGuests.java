@@ -8,7 +8,7 @@ import java.util.List;
 public class EventGenaralGuests {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int eventGeneralGuestsId;
 
     @OneToMany(fetch = FetchType.LAZY)

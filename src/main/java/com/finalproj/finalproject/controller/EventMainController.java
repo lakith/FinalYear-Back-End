@@ -1,6 +1,7 @@
 package com.finalproj.finalproject.controller;
 
 import com.finalproj.finalproject.dto.EventBaseDetailsDTO;
+import com.finalproj.finalproject.dto.EventOtherDetailsDTO;
 import com.finalproj.finalproject.model.Event;
 import com.finalproj.finalproject.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +38,11 @@ public class EventMainController {
     @PostMapping("/eventBaseSave")
     public ResponseEntity saveEventBaseDetails(@RequestBody @Valid EventBaseDetailsDTO eventBaseDetailsDTO, Principal principal) throws Exception {
        return eventService.saveEventBaseDetails(eventBaseDetailsDTO,principal);
+    }
+
+    @PostMapping("/other-data")
+    public ResponseEntity saveOtherData(@RequestBody @Valid EventOtherDetailsDTO eventOtherDetailsDTO) throws Exception {
+        return eventService.saveOtherEventDetails(eventOtherDetailsDTO);
     }
 
 

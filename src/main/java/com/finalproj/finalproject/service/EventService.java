@@ -14,8 +14,5 @@ public interface EventService {
 
     ResponseEntity<?> saveOtherEventDetails(EventOtherDetailsDTO eventOtherDetailsDTO) throws Exception;
 
-    ResponseEntity<?> addNewAdminUsers(EventAdminUsers eventAdminUsers) throws Exception;
-
-    ResponseEntity<?> saveEventFrontPageDetails(EventFrontPageDTO eventFrontPageDTO, Principal principal) throws Exception;
 
 }

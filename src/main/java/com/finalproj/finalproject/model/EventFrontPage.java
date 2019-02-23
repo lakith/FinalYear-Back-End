@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class EventFrontPage {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int eventFrontPageId;
 
     private String topImage;

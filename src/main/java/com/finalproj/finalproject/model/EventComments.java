@@ -1,5 +1,7 @@
 package com.finalproj.finalproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 
 @Entity
@@ -7,7 +9,7 @@ import javax.persistence.*;
 public class EventComments {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int eventCommentId;
 
     private String comment;
@@ -15,6 +17,11 @@ public class EventComments {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "commenter")
     private User commenter;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_event")
+    @JsonIgnore
+    private Event event;
 
     public EventComments() {
     }
@@ -41,5 +48,13 @@ public class EventComments {
 
     public void setCommenter(User commenter) {
         this.commenter = commenter;
+    }
+
+    public Event getEvent() {
+        return event;
+    }
+
+    public void setEvent(Event event) {
+        this.event = event;
     }
 }

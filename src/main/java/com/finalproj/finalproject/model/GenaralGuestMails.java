@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class GenaralGuestMails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int generalGuestId;
 
     private String mail;

@@ -94,140 +94,7 @@ public class EventServiceImpl implements EventService {
 
     }
 
-    public ResponseEntity<?> addNewAdminUsers(EventAdminUsers eventAdminUsers) throws Exception {
-        Optional<Event> optionalEvent = eventRepository.findById(eventAdminUsers.getEventId());
-        if(!optionalEvent.isPresent()){
-            return new ResponseEntity<>(new ResponseModel("Invalied Event Id.","Invalied Event Id.",false),HttpStatus.BAD_REQUEST);
-        }
-        Event event = optionalEvent.get();
-        List<User> eventCreators = event.getEventCreators();
-
-        if(eventCreators.isEmpty()){
-            return new ResponseEntity<>(new ResponseModel("There must be at least one event creator","There must be at least one event creator",false),HttpStatus.BAD_REQUEST);
-        }
-
-        for(int i : eventAdminUsers.getAdminUsers()){
-            Optional<User> optionalUser = userRepository.findById(i);
-            if(!optionalUser.isPresent()){
-                return new ResponseEntity<>(new ResponseModel("Invalid user ID present","Invalid user ID present",false),HttpStatus.BAD_REQUEST);
-            }
-            eventCreators.add(optionalUser.get());
-        }
-
-        event.setEventCreators(eventCreators);
-
-        try {
-            eventRepository.save(event);
-            return new ResponseEntity<>(new ResponseModel("Users added successfully","Users added successfully",true),HttpStatus.CREATED);
-        } catch (Exception e){
-            throw new Exception(e);
-        }
-    }
-
-    public ResponseEntity<?> saveEventFrontPageDetails(EventFrontPageDTO eventFrontPageDTO,Principal principal) throws Exception {
-        Optional<Event> optionalEvent = eventRepository.findById(eventFrontPageDTO.getEventID());
-        if(!optionalEvent.isPresent()){
-            return new ResponseEntity<>(new ResponseModel("Invalied Event Id.","Invalied Event Id.",false),HttpStatus.BAD_REQUEST);
-        }
-        Event event = optionalEvent.get();
-
-        EventFrontPage eventFrontPage = new EventFrontPage();
-        eventFrontPage.setContent(eventFrontPageDTO.getContent());
-        eventFrontPage.setOtherDetails(eventFrontPageDTO.getOtherDetails());
-        eventFrontPage.setTermsAndConditions(eventFrontPageDTO.getTermsAndConditions());
-
-        String topImage = amazonClient.uploadFile(eventFrontPageDTO.getFrontImage(),true);
-
-        eventFrontPage.setTopImage(topImage);
-
-        try {
-            eventFrontPage = eventFrontPageRepository.save(eventFrontPage);
-            event.setEventFrontPage(eventFrontPage);
-            eventRepository.save(event);
-            return new ResponseEntity<>(new ResponseModel("Saved Successfully.","Saved Successfully.",true),HttpStatus.CREATED);
-        } catch (Exception e){
-            throw new Exception(e.getMessage());
-        }
-    }
-
-
-    public ResponseEntity<?> saveComment (CommentDTO commentDTO,Principal principal) throws Exception {
-        Optional<Event> optionalEvent = eventRepository.findById(commentDTO.getEventId());
-        if(!optionalEvent.isPresent()){
-            return new ResponseEntity<>(new ResponseModel("Invalied Event Id.","Invalied Event Id",false),HttpStatus.BAD_REQUEST);
-        }
-        Event event = optionalEvent.get();
-
-        List<EventComments> eventCommentsList = event.getEventComments();
-
-        EventComments eventComments = new EventComments();
-        eventComments.setComment(commentDTO.getComment());
-
-        Optional<User> optionalUser = userRepository.findById(Integer.parseInt(principal.getName()));
-        if(!optionalUser.isPresent()){
-            return new ResponseEntity<>(new ResponseModel("Invalied User Id","Invalied User Id",false),HttpStatus.BAD_REQUEST);
-        }
-        eventComments.setCommenter(optionalUser.get());
-        eventComments = eventCommentsRepositroy.save(eventComments);
-
-        if(eventCommentsList.isEmpty()){
-            eventCommentsList = new ArrayList<>();
-            eventCommentsList.add(eventComments);
-        } else if(!eventCommentsList.isEmpty()){
-            eventCommentsList.add(eventComments);
-        }
-        event.setEventComments(eventCommentsList);
-        try {
-            event = eventRepository.save(event);
-            return new ResponseEntity<>(event,HttpStatus.CREATED);
-        } catch (Exception e) {
-            throw new Exception(e);
-        }
-    }
-
-    private ResponseEntity<?> savePeymentDetails  (PaidEventDetailsDto paidEventDetailsDto) throws Exception {
-
-        Optional<Event> optionalEvent = eventRepository.findById(paidEventDetailsDto.getEventId());
-        if(!optionalEvent.isPresent()){
-            return new ResponseEntity<>(new ResponseModel("Invalid Event Id.","Invalied Event Id",false),HttpStatus.BAD_REQUEST);
-        }
-        Event event = optionalEvent.get();
-
-        if(!event.isPaidEvent()){
-            return new ResponseEntity<>(new ResponseModel("You cannot specify payment details for Free event.","You cannot specify payment details for Free event.",false),HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS);
-        }
-
-        PaidEvent paidEvent = new PaidEvent();
-
-        if(paidEvent.isSellOnlineByUser()){
-            if(!paidEventDetailsDto.getSellingWebUrl().trim().isEmpty()){
-                paidEvent.setSellingWebUrl(paidEventDetailsDto.getSellingWebUrl());
-                paidEvent = paidEventRepository.save(paidEvent);
-            } else {
-                return new ResponseEntity<>(new ResponseModel("You Must specify payment web url.","You Must specify payment web url.",false),HttpStatus.UNAVAILABLE_FOR_LEGAL_REASONS);
-            }
-        } else if(paidEvent.isRsvpSelling()){
-            paidEvent.setAccountOwnerName(paidEventDetailsDto.getAccountOwnerName());
-            paidEvent.setBankAccountNumber(paidEventDetailsDto.getBankAccountNumber());
-            paidEvent.setBankName(paidEventDetailsDto.getBankName());
-            paidEvent.setBranchName(paidEventDetailsDto.getBranchName());
-            paidEvent.setAddress(paidEventDetailsDto.getAddress());
-            paidEvent.setPrice(paidEventDetailsDto.getPrice());
-            paidEvent = paidEventRepository.save(paidEvent);
-        }
-
-        event.setPaidEventData(paidEvent);
-        try {
-            event = eventRepository.save(event);
-            return new ResponseEntity<>(event,HttpStatus.CREATED);
-        } catch (Exception e) {
-            throw new Exception(e.getMessage());
-        }
-    }
-
-
     public ResponseEntity<?> saveOtherEventDetails(EventOtherDetailsDTO eventOtherDetailsDTO) throws Exception {
-
         Optional<Event> optionalEvent = eventRepository.findById(eventOtherDetailsDTO.getEventId());
         if(!optionalEvent.isPresent()){
            return new ResponseEntity<>(new ResponseModel("Invalied Event Id","Invalied Event Id",false),HttpStatus.BAD_REQUEST);
@@ -245,11 +112,11 @@ public class EventServiceImpl implements EventService {
         }
         int eventCategoryId = eventOtherDetailsDTO.getEventCategoryId();
         if(eventCategoryId == 1) {
-            event.setEventPrivate(true);
-            event.setEventPublic(false);
+            event.setPaidEvent(true);
+            event.setFreeEvent(false);
         } else if(eventCategoryId == 2){
-            event.setEventPrivate(false);
-            event.setEventPublic(true);
+            event.setPaidEvent(false);
+            event.setFreeEvent(true);
         }
 
         event.setNumberOfGuests(eventOtherDetailsDTO.getMaximumNumberOfGuests());
@@ -261,6 +128,4 @@ public class EventServiceImpl implements EventService {
             throw new Exception(e.getMessage());
         }
     }
-
-
 }

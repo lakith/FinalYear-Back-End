@@ -9,7 +9,7 @@ import javax.persistence.*;
 public class SpecialGuestEmails {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int specialGuestEmailId;
 
     private String mail;

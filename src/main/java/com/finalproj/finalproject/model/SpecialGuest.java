@@ -10,7 +10,7 @@ import javax.persistence.*;
 public class SpecialGuest {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int specialGuestId;
 
     @OneToOne(fetch = FetchType.LAZY)

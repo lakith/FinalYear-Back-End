@@ -8,11 +8,11 @@ import java.util.List;
 public class EventSpecialGuests {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int eventSpecialGuestId;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "special_user")
+    @JoinColumn(name = "special_guest")
     private List<SpecialGuest> specialGuest;
 
     @OneToMany(fetch = FetchType.LAZY)

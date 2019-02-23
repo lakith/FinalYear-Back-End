@@ -7,7 +7,7 @@ import javax.persistence.*;
 public class PaidEvent {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int paidEventId;
 
     private boolean sellOnlineByUser = false;
