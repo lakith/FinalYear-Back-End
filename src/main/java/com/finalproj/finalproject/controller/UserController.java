@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/staffUser")
@@ -57,5 +58,9 @@ public class UserController {
         return userService.activateAUser(userId);
     }
 
+    @GetMapping("/get-user-from-token")
+    public ResponseEntity<?> getUserFromToken(Principal principal){
+        return userService.getUserFromToken(principal);
+    }
 
 }

@@ -20,6 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -92,6 +93,31 @@ public class UserServiceImpl implements UserService {
             return new ResponseEntity<>(responseModel,HttpStatus.CREATED);
         } catch (Exception e) {
             throw new Exception(e);
+        }
+    }
+
+    public ResponseEntity<?> getUserFromToken(Principal principal){
+        Optional<User> optionalUser = userRepository.findById(Integer.parseInt(principal.getName()));
+        if(!optionalUser.isPresent()){
+            return new ResponseEntity<>(new ResponseModel("Invalied user id","Invalied user id",false),HttpStatus.BAD_REQUEST);
+        } else {
+            String profileUrl = amazonClient.getUrlFromFileName(optionalUser.get().getProfilePic());
+            User user = optionalUser.get();
+
+            AuthToken authToken = new AuthToken();
+            authToken.setAccessToken(principal.getName());
+            authToken.setRefreshToken(user.getRefeshToken());
+
+            DisplayUserDTO displayUserDTO = new DisplayUserDTO();
+            displayUserDTO.setName(user.getName());
+            displayUserDTO.setUserName(user.getUsername());
+            displayUserDTO.setProfileUrl(profileUrl);
+            displayUserDTO.setEmail(user.getEmail());
+            displayUserDTO.setUserId(user.getUserId());
+            displayUserDTO.setAuthToken(authToken);
+            displayUserDTO.setUserRole(user.getUserRole());
+
+            return new ResponseEntity<>(displayUserDTO,HttpStatus.OK);
         }
     }
 

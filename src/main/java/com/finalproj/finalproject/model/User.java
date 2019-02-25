@@ -33,6 +33,8 @@ public class User {
 
     private boolean active = false;
 
+    @Lob
+    @Column( length = 100000)
     private String profilePic;
 
     private String refeshToken;
