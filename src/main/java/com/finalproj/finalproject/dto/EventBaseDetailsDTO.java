@@ -1,5 +1,7 @@
 package com.finalproj.finalproject.dto;
 
+import org.springframework.web.multipart.MultipartFile;
+
 import java.util.Date;
 
 public class EventBaseDetailsDTO {
@@ -13,6 +15,8 @@ public class EventBaseDetailsDTO {
     private String eventPlace;
 
     private String eventHostedUrl;
+
+    private MultipartFile file;
 
     private int eventTypeId;
 
@@ -65,5 +69,13 @@ public class EventBaseDetailsDTO {
 
     public void setEventTypeId(int eventTypeId) {
         this.eventTypeId = eventTypeId;
+    }
+
+    public MultipartFile getFile() {
+        return file;
+    }
+
+    public void setFile(MultipartFile file) {
+        this.file = file;
     }
 }

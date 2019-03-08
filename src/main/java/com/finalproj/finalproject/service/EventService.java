@@ -1,9 +1,6 @@
 package com.finalproj.finalproject.service;
 
-import com.finalproj.finalproject.dto.EventAdminUsers;
-import com.finalproj.finalproject.dto.EventBaseDetailsDTO;
-import com.finalproj.finalproject.dto.EventFrontPageDTO;
-import com.finalproj.finalproject.dto.EventOtherDetailsDTO;
+import com.finalproj.finalproject.dto.*;
 import org.springframework.http.ResponseEntity;
 
 import java.security.Principal;
@@ -14,5 +11,6 @@ public interface EventService {
 
     ResponseEntity<?> saveOtherEventDetails(EventOtherDetailsDTO eventOtherDetailsDTO) throws Exception;
 
+    ResponseEntity<?> updateEventThumbnail(EventThumbnailDTO eventThumbnailDTO) throws Exception;
 
 }

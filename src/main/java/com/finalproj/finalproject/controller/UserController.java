@@ -12,6 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.validation.Valid;
 import javax.validation.constraints.Pattern;
 import java.security.Principal;
+import java.text.ParseException;
 
 @RestController
 @RequestMapping("/staffUser")
@@ -61,6 +62,11 @@ public class UserController {
     @GetMapping("/get-user-from-token")
     public ResponseEntity<?> getUserFromToken(Principal principal){
         return userService.getUserFromToken(principal);
+    }
+
+    @GetMapping("/my-events")
+    public ResponseEntity<?> getMyEvents(Principal principal) throws ParseException {
+        return userService.getMyEvents(principal);
     }
 
 }

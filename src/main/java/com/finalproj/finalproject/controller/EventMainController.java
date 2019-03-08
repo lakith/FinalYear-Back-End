@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Pattern;
 import java.security.Principal;
 import java.util.Date;
 
@@ -36,14 +38,34 @@ public class EventMainController {
     }
 
     @PostMapping("/eventBaseSave")
-    public ResponseEntity saveEventBaseDetails(@RequestBody @Valid EventBaseDetailsDTO eventBaseDetailsDTO, Principal principal) throws Exception {
+    public ResponseEntity saveEventBaseDetails(
+            @RequestParam MultipartFile thumbnail,
+            @RequestParam(required = true)  String eventHeading,
+            @RequestParam(required = true)  Date eventStartDate,
+            @RequestParam(required = true)  Date eventEndDate,
+            @RequestParam(required = true)  String eventPlace,
+            @RequestParam(required = true)  String eventHostedUrl,
+            @RequestParam(required = false)  int eventTypeId,
+            Principal principal
+    ) throws Exception {
+
+        EventBaseDetailsDTO eventBaseDetailsDTO = new EventBaseDetailsDTO();
+        eventBaseDetailsDTO.setEventHeading(eventHeading);
+        eventBaseDetailsDTO.setEventStartDate(eventStartDate);
+        eventBaseDetailsDTO.setEventEndDate(eventEndDate);
+        eventBaseDetailsDTO.setEventPlace(eventPlace);
+        eventBaseDetailsDTO.setEventHostedUrl(eventHostedUrl);
+        eventBaseDetailsDTO.setEventTypeId(eventTypeId);
+        eventBaseDetailsDTO.setFile(thumbnail);
+
        return eventService.saveEventBaseDetails(eventBaseDetailsDTO,principal);
+
     }
 
     @PostMapping("/other-data")
     public ResponseEntity saveOtherData(@RequestBody @Valid EventOtherDetailsDTO eventOtherDetailsDTO) throws Exception {
         return eventService.saveOtherEventDetails(eventOtherDetailsDTO);
     }
-
-
 }
+
+

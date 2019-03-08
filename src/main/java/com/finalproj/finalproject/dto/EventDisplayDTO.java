@@ -1,23 +1,18 @@
-package com.finalproj.finalproject.model;
+package com.finalproj.finalproject.dto;
+
+import com.finalproj.finalproject.model.*;
 
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
 
-@Entity
-@Table(name = "event")
-public class Event {
+public class EventDisplayDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private int eventId;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "event_creator")
     private List<User> eventCreators;
 
-    @OneToOne
-    @JoinColumn(name = "event_type")
     private EventType eventType;
 
     private String eventName;
@@ -36,8 +31,6 @@ public class Event {
 
     private boolean paidEvent = false;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "branchId")
     private PaidEvent paidEventData;
 
     private boolean freeEvent = true;
@@ -46,31 +39,22 @@ public class Event {
 
     private boolean eventPublic = false;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "event_special_guests")
     private EventSpecialGuests eventSpecialGuests;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "special_guest_mail")
     private List<SpecialGuestEmails> specialGuestEmails;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "general_guest_mail")
     private List<GenaralGuestMails> genaralGuestMails;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "event_genaral_guests")
     private EventGenaralGuests eventGenaralGuests;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "event_front_page")
     private EventFrontPage eventFrontPage;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name = "event_comments")
     private List<EventComments> eventComments;
 
-    public Event() {
+    private boolean closed = false;
+
+
+    public EventDisplayDTO() {
     }
 
     public int getEventId() {
@@ -79,6 +63,14 @@ public class Event {
 
     public void setEventId(int eventId) {
         this.eventId = eventId;
+    }
+
+    public List<User> getEventCreators() {
+        return eventCreators;
+    }
+
+    public void setEventCreators(List<User> eventCreators) {
+        this.eventCreators = eventCreators;
     }
 
     public EventType getEventType() {
@@ -95,6 +87,14 @@ public class Event {
 
     public void setEventName(String eventName) {
         this.eventName = eventName;
+    }
+
+    public String getEventThumbnail() {
+        return eventThumbnail;
+    }
+
+    public void setEventThumbnail(String eventThumbnail) {
+        this.eventThumbnail = eventThumbnail;
     }
 
     public Date getEventStartDate() {
@@ -185,6 +185,22 @@ public class Event {
         this.eventSpecialGuests = eventSpecialGuests;
     }
 
+    public List<SpecialGuestEmails> getSpecialGuestEmails() {
+        return specialGuestEmails;
+    }
+
+    public void setSpecialGuestEmails(List<SpecialGuestEmails> specialGuestEmails) {
+        this.specialGuestEmails = specialGuestEmails;
+    }
+
+    public List<GenaralGuestMails> getGenaralGuestMails() {
+        return genaralGuestMails;
+    }
+
+    public void setGenaralGuestMails(List<GenaralGuestMails> genaralGuestMails) {
+        this.genaralGuestMails = genaralGuestMails;
+    }
+
     public EventGenaralGuests getEventGenaralGuests() {
         return eventGenaralGuests;
     }
@@ -209,35 +225,11 @@ public class Event {
         this.eventComments = eventComments;
     }
 
-    public List<User> getEventCreators() {
-        return eventCreators;
+    public boolean isClosed() {
+        return closed;
     }
 
-    public void setEventCreators(List<User> eventCreators) {
-        this.eventCreators = eventCreators;
-    }
-
-    public List<SpecialGuestEmails> getSpecialGuestEmails() {
-        return specialGuestEmails;
-    }
-
-    public void setSpecialGuestEmails(List<SpecialGuestEmails> specialGuestEmails) {
-        this.specialGuestEmails = specialGuestEmails;
-    }
-
-    public List<GenaralGuestMails> getGenaralGuestMails() {
-        return genaralGuestMails;
-    }
-
-    public void setGenaralGuestMails(List<GenaralGuestMails> genaralGuestMails) {
-        this.genaralGuestMails = genaralGuestMails;
-    }
-
-    public String getEventThumbnail() {
-        return eventThumbnail;
-    }
-
-    public void setEventThumbnail(String eventThumbnail) {
-        this.eventThumbnail = eventThumbnail;
+    public void setClosed(boolean closed) {
+        this.closed = closed;
     }
 }

@@ -69,6 +69,9 @@ public class EventServiceImpl implements EventService {
         event.setEventType(eventTypeOptional.get());
         event.setEventCreators(userList);
 
+        String eventThumbnail = amazonClient.uploadFile(eventBaseDetailsDTO.getFile(),true);
+        event.setEventThumbnail(eventThumbnail);
+
         try {
             event = eventRepository.save(event);
 
@@ -128,4 +131,27 @@ public class EventServiceImpl implements EventService {
             throw new Exception(e.getMessage());
         }
     }
+
+    @Override
+    public ResponseEntity<?> updateEventThumbnail(EventThumbnailDTO eventThumbnailDTO) throws Exception {
+        Optional<Event> optionalEvent = eventRepository.findById(eventThumbnailDTO.getEventId());
+        if(!optionalEvent.isPresent()){
+            return new ResponseEntity<>(new ResponseModel("Invalid Event Id","Invalied Event Id",false),HttpStatus.BAD_REQUEST);
+        }
+
+        Event event = optionalEvent.get();
+
+        String eventThumbnail = amazonClient.uploadFile(eventThumbnailDTO.getFile(),true);
+
+        event.setEventThumbnail(eventThumbnail);
+
+        try {
+            event = eventRepository.save(event);
+            return new ResponseEntity<>(event,HttpStatus.CREATED);
+        } catch (Exception e) {
+            throw new Exception(e.getMessage());
+        }
+    }
+
+
 }

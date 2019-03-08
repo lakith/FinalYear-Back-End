@@ -1,14 +1,13 @@
 package com.finalproj.finalproject.service.impl;
 
 import com.finalproj.finalproject.configuration.ApiParameters;
-import com.finalproj.finalproject.dto.AuthToken;
-import com.finalproj.finalproject.dto.DisplayUserDTO;
-import com.finalproj.finalproject.dto.LoginDTO;
-import com.finalproj.finalproject.dto.UserDTO;
+import com.finalproj.finalproject.dto.*;
 import com.finalproj.finalproject.jwt.JwtGenerator;
+import com.finalproj.finalproject.model.Event;
 import com.finalproj.finalproject.model.ResponseModel;
 import com.finalproj.finalproject.model.User;
 import com.finalproj.finalproject.model.UserRole;
+import com.finalproj.finalproject.repository.EventRepository;
 import com.finalproj.finalproject.repository.UserRepository;
 import com.finalproj.finalproject.repository.UserRoleRepository;
 import com.finalproj.finalproject.service.UserService;
@@ -21,9 +20,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @Transactional
@@ -35,15 +34,16 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRoleRepository userRoleRepository;
 
-    @Autowired
-    private final BCryptPasswordEncoder bCryptPasswordEncoder ;
+
+    private BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder() ;
 
     @Autowired
     private AmazonClient amazonClient;
 
-    public UserServiceImpl(BCryptPasswordEncoder bCryptPasswordEncoder) {
-        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-    }
+    @Autowired
+    private EventRepository eventRepository;
+
+
 
     @Override
     public ResponseEntity<?> saveNewUser(UserDTO userDTO) throws Exception {
@@ -85,6 +85,8 @@ public class UserServiceImpl implements UserService {
         newUser.setUserRole(optionalUserRole.get());
         newUser.setPassword(encryptedPassword);
         newUser.setProfilePic(profilePic);
+
+
 
         try {
             userRepository.save(newUser);
@@ -160,7 +162,6 @@ public class UserServiceImpl implements UserService {
             displayUserDTO.setUserRole(optionalUser.get().getUserRole());
             displayUserDTO.setProfileUrl(profileUrl);
 
-
             return new ResponseEntity<>(displayUserDTO, HttpStatus.OK);
             } else {
                 responseModel.setMessage("Invalid Password Entered");
@@ -168,9 +169,67 @@ public class UserServiceImpl implements UserService {
                 return new ResponseEntity<>(responseModel,HttpStatus.UNAUTHORIZED);
             }
 
+    }
 
+    public ResponseEntity<?> getMyEvents(Principal principal) throws ParseException {
+        Optional<User> optionalUser =  userRepository.findById(Integer.parseInt(principal.getName()));
+        if(!optionalUser.isPresent()){
+            return new ResponseEntity<>(new ResponseModel("Invalid User Id.","Invalid User Id.",false),HttpStatus.BAD_REQUEST);
+        }
+        List<Event> eventList = new ArrayList<>();
+        eventList = optionalUser.get().getEventList();
 
+        if(eventList.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
 
+        List<EventDisplayDTO> eventDisplayDTOS = new ArrayList<>();
+
+        for (Event event: eventList ) {
+            String eventUrl = amazonClient.getUrlFromFileName(event.getEventThumbnail());
+            EventDisplayDTO eventDisplayDTO = new EventDisplayDTO();
+            eventDisplayDTO.setEventId(event.getEventId());
+            eventDisplayDTO.setEventCreators(event.getEventCreators());
+            eventDisplayDTO.setEventType(event.getEventType());
+            eventDisplayDTO.setEventName(event.getEventName());
+            eventDisplayDTO.setEventThumbnail(eventUrl);
+            eventDisplayDTO.setEventStartDate(event.getEventStartDate());
+            eventDisplayDTO.setEventEndDate(event.getEventEndDate());
+            eventDisplayDTO.setEventPlace(event.getEventPlace());
+            eventDisplayDTO.setEventHostedUrl(event.getEventHostedUrl());
+            eventDisplayDTO.setNumberOfGuests(event.getNumberOfGuests());
+            eventDisplayDTO.setPaidEvent(event.isPaidEvent());
+            eventDisplayDTO.setPaidEventData(event.getPaidEventData());
+            eventDisplayDTO.setFreeEvent(event.isFreeEvent());
+            eventDisplayDTO.setEventPrivate(event.isEventPrivate());
+            eventDisplayDTO.setEventPublic(event.isEventPublic());
+            eventDisplayDTO.setEventSpecialGuests(event.getEventSpecialGuests());
+            eventDisplayDTO.setSpecialGuestEmails(event.getSpecialGuestEmails());
+            eventDisplayDTO.setGenaralGuestMails(event.getGenaralGuestMails());
+            eventDisplayDTO.setEventFrontPage(event.getEventFrontPage());
+            eventDisplayDTO.setEventComments(event.getEventComments());
+
+            Date eventDate = null;
+            Date today = null;
+            try {
+                eventDate = event.getEventEndDate();
+                today = Calendar.getInstance().getTime();
+
+                SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+                eventDate = sdf.parse(sdf.format(eventDate));
+                today = sdf.parse(sdf.format(today));
+            } catch (ParseException e) {
+                throw e;
+            }
+
+            if (eventDate.compareTo(today) < 0) {
+                    eventDisplayDTO.setClosed(true);
+            }
+
+            eventDisplayDTOS.add(eventDisplayDTO);
+        }
+
+        return new ResponseEntity<>(eventDisplayDTOS,HttpStatus.OK);
     }
 
     @Override

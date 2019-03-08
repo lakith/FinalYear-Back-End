@@ -5,6 +5,7 @@ import com.finalproj.finalproject.dto.UserDTO;
 import org.springframework.http.ResponseEntity;
 
 import java.security.Principal;
+import java.text.ParseException;
 
 public interface UserService {
 
@@ -15,5 +16,7 @@ public interface UserService {
     ResponseEntity<?> activateAUser(int userId);
 
     ResponseEntity<?> getUserFromToken(Principal principal);
+
+    ResponseEntity<?> getMyEvents(Principal principal) throws ParseException;
 
 }
