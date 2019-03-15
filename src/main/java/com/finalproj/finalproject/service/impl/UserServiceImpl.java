@@ -233,6 +233,32 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public ResponseEntity<?> getAllUsers() {
+        List<User> userList = userRepository.findAll();
+        if(userList.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            List<DisplayUserDataDTO> userDataDTOList = new ArrayList<>();
+            for(User user : userList){
+                DisplayUserDataDTO displayUserDataDTO = new DisplayUserDataDTO();
+                displayUserDataDTO.setUserId(user.getUserId());
+                displayUserDataDTO.setName(user.getName());
+                displayUserDataDTO.setEmail(user.getEmail());
+                displayUserDataDTO.setActive(user.isActive());
+                displayUserDataDTO.setUsername(user.getUsername());
+
+                String profilePic = amazonClient.getUrlFromFileName(user.getProfilePic());
+
+                displayUserDataDTO.setProfilePic(profilePic);
+
+                userDataDTOList.add(displayUserDataDTO);
+            }
+
+            return new ResponseEntity<>(userDataDTOList,HttpStatus.OK);
+        }
+    }
+
+    @Override
     public ResponseEntity<?> activateAUser(int userId){
         Optional<User> optionalUser = userRepository.findById(userId);
         if(!optionalUser.isPresent()){

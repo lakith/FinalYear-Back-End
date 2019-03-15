@@ -6,4 +6,6 @@ import org.springframework.http.ResponseEntity;
 public interface EventAdminService {
 
     ResponseEntity<?> addNewAdminUsers(EventAdminUsers eventAdminUsers) throws Exception;
+
+    ResponseEntity<?> getAllEventAdmins(int eventId);
 }

@@ -37,4 +37,9 @@ public class EventAdminUsersController {
         return eventAdminService.addNewAdminUsers(eventAdminUsers);
     }
 
+    @GetMapping("/get-all-admins")
+    public ResponseEntity getAllAdmins(@RequestParam("event-id") int eventId){
+        return eventAdminService.getAllEventAdmins(eventId);
+    }
+
 }

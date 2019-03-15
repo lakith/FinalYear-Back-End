@@ -1,5 +1,6 @@
 package com.finalproj.finalproject.service.impl;
 
+import com.finalproj.finalproject.dto.DisplayAdminsDTO;
 import com.finalproj.finalproject.dto.EventAdminUsers;
 import com.finalproj.finalproject.model.Event;
 import com.finalproj.finalproject.model.ResponseModel;
@@ -25,6 +26,9 @@ public class EventAdminServiceImpl implements EventAdminService {
 
     @Autowired
     UserRepository userRepository;
+
+    @Autowired
+    AmazonClient amazonClient;
 
     public ResponseEntity<?> addNewAdminUsers(EventAdminUsers eventAdminUsers) throws Exception {
 
@@ -71,6 +75,30 @@ public class EventAdminServiceImpl implements EventAdminService {
             return new ResponseEntity<>(event,HttpStatus.CREATED);
         } catch (Exception e){
             throw new Exception(e);
+        }
+    }
+
+    public ResponseEntity<?> getAllEventAdmins(int eventId) {
+        Optional<Event> optionalEvent = eventRepository.findById(eventId);
+        if(!optionalEvent.isPresent()){
+            return new ResponseEntity<>(new ResponseModel("Invalid Event Id",false),HttpStatus.BAD_REQUEST);
+        } else {
+            List<User> eventAdmins = optionalEvent.get().getEventCreators();
+            List<DisplayAdminsDTO> displayAdminsDTOS = new ArrayList<>();
+            for(User user : eventAdmins){
+                DisplayAdminsDTO displayAdminsDTO = new DisplayAdminsDTO();
+                displayAdminsDTO.setUserId(user.getUserId());
+                displayAdminsDTO.setName(user.getName());
+                displayAdminsDTO.setUsername(user.getUsername());
+
+                String profileUrl = amazonClient.getUrlFromFileName(user.getProfilePic());
+
+                displayAdminsDTO.setImageUrl(profileUrl);
+
+                displayAdminsDTOS.add(displayAdminsDTO);
+            }
+
+            return new ResponseEntity<>(displayAdminsDTOS,HttpStatus.OK);
         }
     }
 

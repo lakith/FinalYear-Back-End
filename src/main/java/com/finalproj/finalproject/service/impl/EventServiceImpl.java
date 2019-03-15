@@ -97,6 +97,33 @@ public class EventServiceImpl implements EventService {
 
     }
 
+    public ResponseEntity<?> getOneEventDetails(int eventId,Principal principal){
+        Optional<Event> optionalEvent = eventRepository.findById(eventId);
+        if(!optionalEvent.isPresent()){
+            return new ResponseEntity<>(new ResponseModel("Invalid Event Details",false),HttpStatus.BAD_REQUEST);
+        }
+        Optional<User> optionalUser = userRepository.findById(Integer.parseInt(principal.getName()));
+        if(!optionalUser.isPresent()){
+            return new ResponseEntity<>(new ResponseModel("Invalid User Details",false),HttpStatus.BAD_REQUEST);
+        }
+
+        List<User> eventCreators = optionalEvent.get().getEventCreators();
+
+        boolean flag = false;
+
+        for(User user : eventCreators){
+            if(user.getUserId() == Integer.parseInt(principal.getName())){
+                flag = true;
+            }
+        }
+
+        if(flag){
+            return new ResponseEntity<>(optionalEvent.get(),HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseModel("You are not an admin of this event",false),HttpStatus.BAD_REQUEST);
+        }
+    }
+
     public ResponseEntity<?> saveOtherEventDetails(EventOtherDetailsDTO eventOtherDetailsDTO) throws Exception {
         Optional<Event> optionalEvent = eventRepository.findById(eventOtherDetailsDTO.getEventId());
         if(!optionalEvent.isPresent()){

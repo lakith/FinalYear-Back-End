@@ -13,4 +13,5 @@ public interface EventService {
 
     ResponseEntity<?> updateEventThumbnail(EventThumbnailDTO eventThumbnailDTO) throws Exception;
 
+    ResponseEntity<?> getOneEventDetails(int eventId,Principal principal);
 }

@@ -62,6 +62,11 @@ public class EventMainController {
 
     }
 
+    @GetMapping("/get-one-event-data")
+    public ResponseEntity getOneEvent(@RequestParam("event-id") int eventId,Principal principal){
+        return eventService.getOneEventDetails(eventId,principal);
+    }
+
     @PostMapping("/other-data")
     public ResponseEntity saveOtherData(@RequestBody @Valid EventOtherDetailsDTO eventOtherDetailsDTO) throws Exception {
         return eventService.saveOtherEventDetails(eventOtherDetailsDTO);

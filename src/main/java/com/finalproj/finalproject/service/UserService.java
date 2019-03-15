@@ -19,4 +19,5 @@ public interface UserService {
 
     ResponseEntity<?> getMyEvents(Principal principal) throws ParseException;
 
+    ResponseEntity<?> getAllUsers();
 }

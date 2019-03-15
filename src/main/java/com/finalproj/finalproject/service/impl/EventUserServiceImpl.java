@@ -149,7 +149,6 @@ public class EventUserServiceImpl implements EventUserService {
         }
 
         return new ResponseEntity<>(filterdList,HttpStatus.OK);
-
     }
 
 
