@@ -10,7 +10,6 @@ public class FormConfigDTO {
     private String placeHolderText;
     private boolean required;
     private String errorMessage;
-    private EventForm eventForm;
     private boolean radio;
     private int radioGroup;
 
@@ -63,14 +62,6 @@ public class FormConfigDTO {
 
     public void setErrorMessage(String errorMessage) {
         this.errorMessage = errorMessage;
-    }
-
-    public EventForm getEventForm() {
-        return eventForm;
-    }
-
-    public void setEventForm(EventForm eventForm) {
-        this.eventForm = eventForm;
     }
 
     public boolean isRadio() {
