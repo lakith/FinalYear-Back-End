@@ -70,6 +70,10 @@ public class Event {
     @JoinColumn(name = "event_comments")
     private List<EventComments> eventComments;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_form")
+    private EventForm eventForm;
+
     public Event() {
     }
 
@@ -239,5 +243,13 @@ public class Event {
 
     public void setEventThumbnail(String eventThumbnail) {
         this.eventThumbnail = eventThumbnail;
+    }
+
+    public EventForm getEventForm() {
+        return eventForm;
+    }
+
+    public void setEventForm(EventForm eventForm) {
+        this.eventForm = eventForm;
     }
 }

@@ -2,7 +2,6 @@ package com.finalproj.finalproject.controller;
 
 import com.finalproj.finalproject.dto.EventBaseDetailsDTO;
 import com.finalproj.finalproject.dto.EventOtherDetailsDTO;
-import com.finalproj.finalproject.model.Event;
 import com.finalproj.finalproject.service.EventService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Pattern;
 import java.security.Principal;
 import java.util.Date;
 
