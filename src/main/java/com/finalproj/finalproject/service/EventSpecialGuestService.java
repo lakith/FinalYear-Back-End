@@ -11,4 +11,6 @@ public interface EventSpecialGuestService {
     ResponseEntity<?> sendmailsForSpecialGuest(GuestMailsDTO guestMailsDTO) throws Exception;
 
     ResponseEntity<?> confirmUserAttendance(UserConfirmationDTO userConfirmationDTO, Principal principal) throws Exception;
+
+    ResponseEntity<?> getEventSpecialGuestList(int eventId);
 }

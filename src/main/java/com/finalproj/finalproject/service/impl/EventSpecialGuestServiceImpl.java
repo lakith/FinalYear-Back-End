@@ -138,4 +138,26 @@ public class EventSpecialGuestServiceImpl implements EventSpecialGuestService {
             throw new Exception(e.getMessage());
         }
     }
+
+    public ResponseEntity<?> getEventSpecialGuestList(int eventId) {
+        Optional<Event> optionalEvent = eventRepository.findById(eventId);
+        if(!optionalEvent.isPresent()){
+            return new ResponseEntity<>(new ResponseModel("Invalied Event Id. ","Invalid Event Id.",false), HttpStatus.BAD_REQUEST);
+        }
+        List<SpecialGuest>  specialGuestList = new ArrayList<>();
+        Event event = optionalEvent.get();
+
+        if(event.getEventSpecialGuests() != null){
+            specialGuestList = event.getEventSpecialGuests().getSpecialGuest();
+        } else {
+            return new ResponseEntity<>(new ResponseModel("No events display","No events display",false),HttpStatus.BAD_REQUEST);
+        }
+
+        if(!specialGuestList.isEmpty()){
+            return new ResponseEntity<>(specialGuestList,HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseModel("No events display","No events display",false),HttpStatus.BAD_REQUEST);
+        }
+
+    }
 }

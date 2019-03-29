@@ -42,4 +42,9 @@ public class EventSpecialGuestController {
         return eventSpecialGuestService.confirmUserAttendance(userConfirmationDTO, principal);
     }
 
+    @GetMapping("/get-guests")
+    public ResponseEntity getGuests(@RequestParam("event-id") int eventId){
+        return eventSpecialGuestService.getEventSpecialGuestList(eventId);
+    }
+
 }

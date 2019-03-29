@@ -17,6 +17,8 @@ public class GeneralGuest {
     @JoinColumn(name = "genaral_user")
     private User genaralUser;
 
+    private boolean eventAdminConfirmation = false;
+
     @Enumerated(EnumType.STRING)
     private UserConfirmation confirmation;
 
@@ -24,6 +26,14 @@ public class GeneralGuest {
     private MealPreferance mealPreferance;
 
     public GeneralGuest() {
+    }
+
+    public boolean isEventAdminConfirmation() {
+        return eventAdminConfirmation;
+    }
+
+    public void setEventAdminConfirmation(boolean eventAdminConfirmation) {
+        this.eventAdminConfirmation = eventAdminConfirmation;
     }
 
     public int getGenaralGuestId() {

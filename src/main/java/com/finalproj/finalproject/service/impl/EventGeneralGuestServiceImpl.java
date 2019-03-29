@@ -3,6 +3,7 @@ package com.finalproj.finalproject.service.impl;
 import com.finalproj.finalproject.Enums.MealPreferance;
 import com.finalproj.finalproject.Enums.UserConfirmation;
 import com.finalproj.finalproject.data.MailBody;
+import com.finalproj.finalproject.dto.EventGenaralConfirmationDto;
 import com.finalproj.finalproject.dto.GuestMailsDTO;
 import com.finalproj.finalproject.dto.UserConfirmationDTO;
 import com.finalproj.finalproject.model.*;
@@ -138,6 +139,96 @@ public class EventGeneralGuestServiceImpl implements EventGeneralGuestService {
             return new ResponseEntity<>(event,HttpStatus.CREATED);
         } catch (Exception e) {
             throw new Exception(e.getMessage());
+        }
+
+    }
+
+    public ResponseEntity<?> eventAdminConfirmation(int eventId,int guestId) {
+
+        Optional<Event> optionalEvent = eventRepository.findById(eventId);
+        if (!optionalEvent.isPresent()) {
+            return new ResponseEntity<>(new ResponseModel("Invalied Event Id. ", "Invalid Event Id.", false), HttpStatus.BAD_REQUEST);
+        }
+
+        Event event = optionalEvent.get();
+        EventGenaralGuests eventGenaralGuests = event.getEventGenaralGuests();
+        List<GeneralGuest> generalGuestList = eventGenaralGuests.getGeneralGuest();
+
+        boolean status = false;
+        for (GeneralGuest guest : generalGuestList) {
+            if (guest.getGenaralGuestId() == guestId) {
+
+                guest.setEventAdminConfirmation(true);
+                try {
+                    generalGuestRepository.save(guest);
+                    status = true;
+                } catch (Exception e) {
+                    throw new RuntimeException("Something went wrong");
+                }
+            }
+        }
+
+        if (status) {
+            return new ResponseEntity<>(new ResponseModel("Confirmed Successfully", true), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseModel("User Does not exists", false), HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<?> eventAdminConfirmation(EventGenaralConfirmationDto eventGenaralConfirmationDto){
+
+        Optional<Event> optionalEvent = eventRepository.findById(eventGenaralConfirmationDto.getEventId());
+        if(!optionalEvent.isPresent()){
+            return new ResponseEntity<>(new ResponseModel("Invalied Event Id. ","Invalid Event Id.",false), HttpStatus.BAD_REQUEST);
+        }
+
+        Event event = optionalEvent.get();
+        EventGenaralGuests eventGenaralGuests = event.getEventGenaralGuests();
+        List<GeneralGuest> generalGuestList = eventGenaralGuests.getGeneralGuest();
+
+        boolean status = false;
+        for(GeneralGuest guest : generalGuestList){
+
+            for(int i :eventGenaralConfirmationDto.getGenaralGuestEmails()) {
+                if (guest.getGenaralGuestId() == i) {
+
+                    guest.setEventAdminConfirmation(true);
+                    try {
+                        generalGuestRepository.save(guest);
+                        status = true;
+                    } catch (Exception e) {
+                        throw new RuntimeException("Something went wrong");
+                    }
+                }
+            }
+        }
+
+        if(status){
+            return new ResponseEntity<>(new ResponseModel("Confirmed Successfully",true),HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseModel("User Does not exists",false),HttpStatus.BAD_REQUEST);
+        }
+
+    }
+
+    public ResponseEntity<?> getEventGeneralGuestList(int eventId) {
+        Optional<Event> optionalEvent = eventRepository.findById(eventId);
+        if(!optionalEvent.isPresent()){
+            return new ResponseEntity<>(new ResponseModel("Invalied Event Id. ","Invalid Event Id.",false), HttpStatus.BAD_REQUEST);
+        }
+        List<GeneralGuest>  generalGuestList = new ArrayList<>();
+        Event event = optionalEvent.get();
+
+        if(event.getEventGenaralGuests() != null){
+            generalGuestList = event.getEventGenaralGuests().getGeneralGuest();
+        } else {
+            return new ResponseEntity<>(new ResponseModel("No events display","No events display",false),HttpStatus.BAD_REQUEST);
+        }
+
+        if(!generalGuestList.isEmpty()){
+            return new ResponseEntity<>(generalGuestList,HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(new ResponseModel("No events display","No events display",false),HttpStatus.BAD_REQUEST);
         }
 
     }

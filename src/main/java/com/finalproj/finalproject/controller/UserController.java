@@ -69,6 +69,11 @@ public class UserController {
         return userService.getMyEvents(principal);
     }
 
+    @GetMapping("/get-one-user")
+    public ResponseEntity<?> getOneUser(@RequestParam("user") int user){
+        return userService.getOneUser(user);
+    }
+
     @GetMapping("/get-all-users")
     public ResponseEntity<?> getAllUsers(){
         return userService.getAllUsers();
