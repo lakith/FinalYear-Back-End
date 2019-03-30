@@ -36,4 +36,9 @@ public class EventFrontPageController {
         return eventFrontPageService.saveEventFrontPageDetails(eventFrontPageDTO,principal);
     }
 
+    @GetMapping("/get-details")
+    public ResponseEntity getFrontPageDetails(@RequestParam("event-id") int eventId) {
+        return eventFrontPageService.getFrontPgeDetails(eventId);
+    }
+
 }

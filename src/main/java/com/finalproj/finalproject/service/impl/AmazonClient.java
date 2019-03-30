@@ -17,12 +17,11 @@ import java.util.Date;
 @Service
 public class AmazonClient {
 
-
     @Autowired
     private AmazonS3 s3client;
 
 
-    String bucketName = "govi-test-bucket";
+    String bucketName = "hospitel-paid-bucket";
 
     SimpleDateFormat sdf =new SimpleDateFormat("yyyyMMdd-hhmmsss");
     String date = sdf.format(new Date());

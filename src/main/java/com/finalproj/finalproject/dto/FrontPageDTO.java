@@ -1,35 +1,18 @@
-package com.finalproj.finalproject.model;
+package com.finalproj.finalproject.dto;
 
-import javax.persistence.*;
+public class FrontPageDTO {
 
-@Entity
-@Table(name = "event_front_page")
-public class EventFrontPage {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int eventFrontPageId;
 
     private String topImage;
 
-    private String content;
-
-    @Lob
     private String discription;
 
     private String termsAndConditions;
 
     private String otherDetails;
 
-    public EventFrontPage() {
-    }
-
-    public String getDiscription() {
-        return discription;
-    }
-
-    public void setDiscription(String discription) {
-        this.discription = discription;
+    public FrontPageDTO() {
     }
 
     public int getEventFrontPageId() {
@@ -48,12 +31,12 @@ public class EventFrontPage {
         this.topImage = topImage;
     }
 
-    public String getContent() {
-        return content;
+    public String getDiscription() {
+        return discription;
     }
 
-    public void setContent(String content) {
-        this.content = content;
+    public void setDiscription(String discription) {
+        this.discription = discription;
     }
 
     public String getTermsAndConditions() {

@@ -14,4 +14,12 @@ public interface EventService {
     ResponseEntity<?> updateEventThumbnail(EventThumbnailDTO eventThumbnailDTO) throws Exception;
 
     ResponseEntity<?> getOneEventDetails(int eventId,Principal principal);
+
+    ResponseEntity<?> getALlEvents();
+
+    ResponseEntity<?> getALLPrivateOrPublicEvents(boolean privateEvent , boolean publicEvent);
+
+    ResponseEntity<?> getALLFreeOrPaid(boolean paid , boolean free);
+
+    ResponseEntity<?> getALLEventsByEventType(int eventTypeId);
 }

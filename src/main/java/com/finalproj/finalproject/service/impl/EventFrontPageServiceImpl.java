@@ -1,6 +1,7 @@
 package com.finalproj.finalproject.service.impl;
 
 import com.finalproj.finalproject.dto.EventFrontPageDTO;
+import com.finalproj.finalproject.dto.FrontPageDTO;
 import com.finalproj.finalproject.model.Event;
 import com.finalproj.finalproject.model.EventFrontPage;
 import com.finalproj.finalproject.model.ResponseModel;
@@ -40,7 +41,7 @@ public class EventFrontPageServiceImpl implements EventFrontPageService {
         Event event = optionalEvent.get();
 
         EventFrontPage eventFrontPage = new EventFrontPage();
-        eventFrontPage.setContent(eventFrontPageDTO.getContent());
+        eventFrontPage.setDiscription(eventFrontPageDTO.getContent());
         eventFrontPage.setOtherDetails(eventFrontPageDTO.getOtherDetails());
         eventFrontPage.setTermsAndConditions(eventFrontPageDTO.getTermsAndConditions());
 
@@ -57,5 +58,24 @@ public class EventFrontPageServiceImpl implements EventFrontPageService {
             throw new Exception(e.getMessage());
         }
     }
+
+    @Override
+    public ResponseEntity getFrontPgeDetails(int eventId) {
+        Optional<Event> optionalEvent = eventRepository.findById(eventId);
+        if(!optionalEvent.isPresent()){
+            return new ResponseEntity<>(new ResponseModel("Invalid Event Id.","Invalid Event Id.",false), HttpStatus.BAD_REQUEST);
+        }
+        Event event = optionalEvent.get();
+
+        EventFrontPage eventFrontPage = event.getEventFrontPage();
+
+
+
+        FrontPageDTO frontPageDTO = new FrontPageDTO();
+        frontPageDTO.setDiscription(eventFrontPage.getDiscription());
+
+        return new ResponseEntity(frontPageDTO,HttpStatus.OK);
+    }
+
 
 }

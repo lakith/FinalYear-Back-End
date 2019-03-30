@@ -65,6 +65,26 @@ public class EventMainController {
         return eventService.getOneEventDetails(eventId,principal);
     }
 
+    @GetMapping("/get-all-events")
+    public ResponseEntity getALlEvents(){
+        return eventService.getALlEvents();
+    }
+
+    @GetMapping("/get-all-public-or-private-events")
+    public ResponseEntity getALlPublicOrPrivateEvents(@RequestParam(value = "private-event",defaultValue = "false") boolean privateEvent ,@RequestParam(value = "public-event",defaultValue = "false") boolean publicEvent){
+        return eventService.getALLPrivateOrPublicEvents(privateEvent,publicEvent);
+    }
+
+    @GetMapping("/get-all-free-or-paid-events")
+    public ResponseEntity getALLFreeOrPaid(@RequestParam(value = "paid",defaultValue = "false")boolean paid ,@RequestParam(value = "free",defaultValue = "false")boolean free){
+        return eventService.getALLFreeOrPaid(paid,free);
+    }
+
+    @GetMapping("/get-all-events-by-event-type")
+    public ResponseEntity getAllEventsByEventType(@RequestParam(value = "eventTypeId")int eventTypeId){
+        return eventService.getALLEventsByEventType(eventTypeId);
+    }
+
     @PostMapping("/other-data")
     public ResponseEntity saveOtherData(@RequestBody @Valid EventOtherDetailsDTO eventOtherDetailsDTO) throws Exception {
         return eventService.saveOtherEventDetails(eventOtherDetailsDTO);

@@ -159,6 +159,71 @@ public class EventServiceImpl implements EventService {
         }
     }
 
+    public ResponseEntity<?> getALlEvents(){
+        List<Event> eventList = eventRepository.findAll();
+        if(eventList.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(eventList,HttpStatus.OK);
+        }
+    }
+
+    public ResponseEntity<?> getALLPrivateOrPublicEvents(boolean privateEvent , boolean publicEvent){
+
+        if(privateEvent){
+            List<Event> eventList = eventRepository.getAllPrivateEvents();
+            if(eventList.isEmpty()){
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else {
+                return new ResponseEntity<>(eventList,HttpStatus.OK);
+            }
+        } else if(publicEvent) {
+            List<Event> eventList = eventRepository.getAllPublicEvents();
+            if(eventList.isEmpty()){
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else {
+                return new ResponseEntity<>(eventList,HttpStatus.OK);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<?> getALLFreeOrPaid(boolean paid , boolean free){
+        if(paid){
+            List<Event> eventList = eventRepository.getAllPaiEvents();
+            if(eventList.isEmpty()){
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else {
+                return new ResponseEntity<>(eventList,HttpStatus.OK);
+            }
+        } else if(free) {
+            List<Event> eventList = eventRepository.getAllFreeEvents();
+            if(eventList.isEmpty()){
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            } else {
+                return new ResponseEntity<>(eventList,HttpStatus.OK);
+            }
+
+        } else {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+    }
+
+    public ResponseEntity<?> getALLEventsByEventType(int eventTypeId){
+        Optional<EventType> eventTypeOptional = eventTypeRepository.findById(eventTypeId);
+        if(!eventTypeOptional.isPresent()){
+            return new ResponseEntity<>(new ResponseModel("Invalied EventType id","Invalied EventType id",false),HttpStatus.BAD_REQUEST);
+        }
+
+        List<Event> eventList = eventRepository.getAllEventsByEventType(eventTypeId);
+        if(eventList.isEmpty()){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(eventList,HttpStatus.OK);
+        }
+    }
+
     @Override
     public ResponseEntity<?> updateEventThumbnail(EventThumbnailDTO eventThumbnailDTO) throws Exception {
         Optional<Event> optionalEvent = eventRepository.findById(eventThumbnailDTO.getEventId());

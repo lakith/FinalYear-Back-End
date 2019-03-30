@@ -8,4 +8,6 @@ import java.security.Principal;
 public interface EventFrontPageService {
 
     ResponseEntity<?> saveEventFrontPageDetails(EventFrontPageDTO eventFrontPageDTO, Principal principal) throws Exception;
+
+    ResponseEntity getFrontPgeDetails(int eventId);
 }
