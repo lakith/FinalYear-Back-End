@@ -4,6 +4,7 @@ import com.finalproj.finalproject.dto.*;
 import org.springframework.http.ResponseEntity;
 
 import java.security.Principal;
+import java.text.ParseException;
 
 public interface EventService {
 
@@ -15,11 +16,13 @@ public interface EventService {
 
     ResponseEntity<?> getOneEventDetails(int eventId,Principal principal);
 
-    ResponseEntity<?> getALlEvents();
+    ResponseEntity<?> getALlEvents() throws ParseException;
 
-    ResponseEntity<?> getALLPrivateOrPublicEvents(boolean privateEvent , boolean publicEvent);
+    ResponseEntity<?> getALLPrivateOrPublicEvents(boolean privateEvent , boolean publicEvent) throws ParseException;
 
-    ResponseEntity<?> getALLFreeOrPaid(boolean paid , boolean free);
+    ResponseEntity<?> getALLFreeOrPaid(boolean paid , boolean free) throws ParseException;
 
-    ResponseEntity<?> getALLEventsByEventType(int eventTypeId);
+    ResponseEntity<?> getALLEventsByEventType(int eventTypeId) throws ParseException;
+
+    ResponseEntity<?> getOneEventForDisplay(int eventId) throws ParseException;
 }

@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.security.Principal;
+import java.text.ParseException;
 import java.util.Date;
 
 @RestController
@@ -66,23 +67,28 @@ public class EventMainController {
     }
 
     @GetMapping("/get-all-events")
-    public ResponseEntity getALlEvents(){
+    public ResponseEntity getALlEvents() throws ParseException {
         return eventService.getALlEvents();
     }
 
     @GetMapping("/get-all-public-or-private-events")
-    public ResponseEntity getALlPublicOrPrivateEvents(@RequestParam(value = "private-event",defaultValue = "false") boolean privateEvent ,@RequestParam(value = "public-event",defaultValue = "false") boolean publicEvent){
+    public ResponseEntity getALlPublicOrPrivateEvents(@RequestParam(value = "private-event",defaultValue = "false") boolean privateEvent ,@RequestParam(value = "public-event",defaultValue = "false") boolean publicEvent) throws ParseException {
         return eventService.getALLPrivateOrPublicEvents(privateEvent,publicEvent);
     }
 
     @GetMapping("/get-all-free-or-paid-events")
-    public ResponseEntity getALLFreeOrPaid(@RequestParam(value = "paid",defaultValue = "false")boolean paid ,@RequestParam(value = "free",defaultValue = "false")boolean free){
+    public ResponseEntity getALLFreeOrPaid(@RequestParam(value = "paid",defaultValue = "false")boolean paid ,@RequestParam(value = "free",defaultValue = "false")boolean free) throws ParseException {
         return eventService.getALLFreeOrPaid(paid,free);
     }
 
     @GetMapping("/get-all-events-by-event-type")
-    public ResponseEntity getAllEventsByEventType(@RequestParam(value = "eventTypeId")int eventTypeId){
+    public ResponseEntity getAllEventsByEventType(@RequestParam(value = "eventTypeId")int eventTypeId) throws ParseException {
         return eventService.getALLEventsByEventType(eventTypeId);
+    }
+
+    @GetMapping("/get-one-event-display")
+    public ResponseEntity getOneEventDisplay(@RequestParam("event-id") int eventId) throws ParseException {
+       return eventService.getOneEventForDisplay(eventId);
     }
 
     @PostMapping("/other-data")

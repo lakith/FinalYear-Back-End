@@ -11,9 +11,9 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 @Transactional
@@ -124,6 +124,23 @@ public class EventServiceImpl implements EventService {
         }
     }
 
+    @SuppressWarnings("Duplicates")
+    public ResponseEntity<?> getOneEventForDisplay(int eventId) throws ParseException {
+
+        Optional<Event> optionalEvent = eventRepository.findById(eventId);
+        if(!optionalEvent.isPresent()){
+            return new ResponseEntity<>(new ResponseModel("Invalied Event Id","Invalied Event Id",false),HttpStatus.BAD_REQUEST);
+        }
+
+        Event event = optionalEvent.get();
+
+        if(getOneDisplayFormat(event) != null){
+            EventOneDisplayDTO eventOneDisplayDTO = getOneDisplayFormat(event);
+            return new ResponseEntity<>(eventOneDisplayDTO,HttpStatus.OK);
+        } else return new ResponseEntity<>(new ResponseModel("Event is not comlpleted","Event is not comlpleted",false),HttpStatus.OK);
+
+    }
+
     public ResponseEntity<?> saveOtherEventDetails(EventOtherDetailsDTO eventOtherDetailsDTO) throws Exception {
         Optional<Event> optionalEvent = eventRepository.findById(eventOtherDetailsDTO.getEventId());
         if(!optionalEvent.isPresent()){
@@ -159,50 +176,76 @@ public class EventServiceImpl implements EventService {
         }
     }
 
-    public ResponseEntity<?> getALlEvents(){
+    public ResponseEntity<?> getALlEvents() throws ParseException {
         List<Event> eventList = eventRepository.findAll();
         if(eventList.isEmpty()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
-            return new ResponseEntity<>(eventList,HttpStatus.OK);
+            List<EventDisplayDTO> eventDisplayDTOS = new ArrayList<>();
+            for(Event event : eventList){
+                EventDisplayDTO eventDisplayDTO = getDisplayFormat(event);
+                eventDisplayDTOS.add(eventDisplayDTO);
+            }
+            return new ResponseEntity<>(eventDisplayDTOS,HttpStatus.OK);
         }
     }
 
-    public ResponseEntity<?> getALLPrivateOrPublicEvents(boolean privateEvent , boolean publicEvent){
+    public ResponseEntity<?> getALLPrivateOrPublicEvents(boolean privateEvent , boolean publicEvent) throws ParseException {
 
         if(privateEvent){
             List<Event> eventList = eventRepository.getAllPrivateEvents();
             if(eventList.isEmpty()){
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             } else {
-                return new ResponseEntity<>(eventList,HttpStatus.OK);
+                List<EventDisplayDTO> eventDisplayDTOS = new ArrayList<>();
+                for(Event event : eventList){
+                    EventDisplayDTO eventDisplayDTO = getDisplayFormat(event);
+                    eventDisplayDTOS.add(eventDisplayDTO);
+                }
+                return new ResponseEntity<>(eventDisplayDTOS,HttpStatus.OK);
             }
         } else if(publicEvent) {
             List<Event> eventList = eventRepository.getAllPublicEvents();
             if(eventList.isEmpty()){
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             } else {
-                return new ResponseEntity<>(eventList,HttpStatus.OK);
+                List<EventDisplayDTO> eventDisplayDTOS = new ArrayList<>();
+                for(Event event : eventList){
+                    EventDisplayDTO eventDisplayDTO = getDisplayFormat(event);
+                    eventDisplayDTOS.add(eventDisplayDTO);
+                }
+                return new ResponseEntity<>(eventDisplayDTOS,HttpStatus.OK);
             }
         } else {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    public ResponseEntity<?> getALLFreeOrPaid(boolean paid , boolean free){
+
+    public ResponseEntity<?> getALLFreeOrPaid(boolean paid , boolean free) throws ParseException {
         if(paid){
             List<Event> eventList = eventRepository.getAllPaiEvents();
             if(eventList.isEmpty()){
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             } else {
-                return new ResponseEntity<>(eventList,HttpStatus.OK);
+                List<EventDisplayDTO> eventDisplayDTOS = new ArrayList<>();
+                for(Event event : eventList){
+                    EventDisplayDTO eventDisplayDTO = getDisplayFormat(event);
+                    eventDisplayDTOS.add(eventDisplayDTO);
+                }
+                return new ResponseEntity<>(eventDisplayDTOS,HttpStatus.OK);
             }
         } else if(free) {
             List<Event> eventList = eventRepository.getAllFreeEvents();
             if(eventList.isEmpty()){
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             } else {
-                return new ResponseEntity<>(eventList,HttpStatus.OK);
+                List<EventDisplayDTO> eventDisplayDTOS = new ArrayList<>();
+                for(Event event : eventList){
+                    EventDisplayDTO eventDisplayDTO = getDisplayFormat(event);
+                    eventDisplayDTOS.add(eventDisplayDTO);
+                }
+                return new ResponseEntity<>(eventDisplayDTOS,HttpStatus.OK);
             }
 
         } else {
@@ -210,7 +253,7 @@ public class EventServiceImpl implements EventService {
         }
     }
 
-    public ResponseEntity<?> getALLEventsByEventType(int eventTypeId){
+    public ResponseEntity<?> getALLEventsByEventType (int eventTypeId) throws ParseException {
         Optional<EventType> eventTypeOptional = eventTypeRepository.findById(eventTypeId);
         if(!eventTypeOptional.isPresent()){
             return new ResponseEntity<>(new ResponseModel("Invalied EventType id","Invalied EventType id",false),HttpStatus.BAD_REQUEST);
@@ -220,7 +263,12 @@ public class EventServiceImpl implements EventService {
         if(eventList.isEmpty()){
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         } else {
-            return new ResponseEntity<>(eventList,HttpStatus.OK);
+            List<EventDisplayDTO> eventDisplayDTOS = new ArrayList<>();
+            for(Event event : eventList){
+                EventDisplayDTO eventDisplayDTO = getDisplayFormat(event);
+                eventDisplayDTOS.add(eventDisplayDTO);
+            }
+            return new ResponseEntity<>(eventDisplayDTOS,HttpStatus.OK);
         }
     }
 
@@ -243,6 +291,130 @@ public class EventServiceImpl implements EventService {
         } catch (Exception e) {
             throw new Exception(e.getMessage());
         }
+    }
+
+    @SuppressWarnings("Duplicates")
+    private EventOneDisplayDTO getOneDisplayFormat (Event event) throws ParseException {
+
+        String eventUrl = amazonClient.getUrlFromFileName(event.getEventThumbnail());
+        EventOneDisplayDTO eventDisplayDTO = new EventOneDisplayDTO();
+        eventDisplayDTO.setEventId(event.getEventId());
+        eventDisplayDTO.setEventCreators(event.getEventCreators());
+        eventDisplayDTO.setEventType(event.getEventType());
+        eventDisplayDTO.setEventName(event.getEventName());
+        eventDisplayDTO.setEventThumbnail(eventUrl);
+        eventDisplayDTO.setEventStartDate(event.getEventStartDate());
+        eventDisplayDTO.setEventEndDate(event.getEventEndDate());
+        eventDisplayDTO.setEventPlace(event.getEventPlace());
+        eventDisplayDTO.setEventHostedUrl(event.getEventHostedUrl());
+        eventDisplayDTO.setNumberOfGuests(event.getNumberOfGuests());
+        eventDisplayDTO.setPaidEvent(event.isPaidEvent());
+        eventDisplayDTO.setPaidEventData(event.getPaidEventData());
+        eventDisplayDTO.setFreeEvent(event.isFreeEvent());
+        eventDisplayDTO.setEventPrivate(event.isEventPrivate());
+        eventDisplayDTO.setEventPublic(event.isEventPublic());
+        eventDisplayDTO.setEventSpecialGuests(event.getEventSpecialGuests());
+        eventDisplayDTO.setSpecialGuestEmails(event.getSpecialGuestEmails());
+        eventDisplayDTO.setGenaralGuestMails(event.getGenaralGuestMails());
+
+
+        if(event.getEventFrontPage() != null){
+
+            String eventFronUrl = amazonClient.getUrlFromFileName(event.getEventFrontPage().getTopImage());
+
+            eventDisplayDTO.setDiscription(event.getEventFrontPage().getDiscription());
+            eventDisplayDTO.setEventFrontPageId(event.getEventFrontPage().getEventFrontPageId());
+            eventDisplayDTO.setOtherDetails(event.getEventFrontPage().getOtherDetails());
+            eventDisplayDTO.setTermsAndConditions(event.getEventFrontPage().getTermsAndConditions());
+            eventDisplayDTO.setTopImage(eventFronUrl);
+
+        } else return null;
+
+        if(!event.getEventComments().isEmpty()){
+            List<EventComments> eventComments = event.getEventComments();
+
+            List<EventCommentsDTO> eventCommentsDTOList = new ArrayList<>();
+
+            for(EventComments comments : eventComments){
+                EventCommentsDTO eventCommentsDTO = new EventCommentsDTO();
+                eventCommentsDTO.setComment(comments.getComment());
+                eventCommentsDTO.setEventCommentId(comments.getEventCommentId());
+                eventCommentsDTO.setCommenterName(comments.getCommenter().getName());
+                String eventCommenterProfile = amazonClient.getUrlFromFileName(comments.getCommenter().getProfilePic());
+                eventCommentsDTO.setCommenterProfile(eventCommenterProfile);
+                eventCommentsDTOList.add(eventCommentsDTO);
+            }
+
+            eventDisplayDTO.setEventComments(eventCommentsDTOList);
+        }
+
+
+
+
+        Date eventDate = null;
+        Date today = null;
+        try {
+            eventDate = event.getEventEndDate();
+            today = Calendar.getInstance().getTime();
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            eventDate = sdf.parse(sdf.format(eventDate));
+            today = sdf.parse(sdf.format(today));
+        } catch (ParseException e) {
+            throw e;
+        }
+
+        if (eventDate.compareTo(today) < 0) {
+            eventDisplayDTO.setClosed(true);
+        }
+
+        return eventDisplayDTO;
+    }
+
+    @SuppressWarnings("Duplicates")
+    private EventDisplayDTO getDisplayFormat (Event event) throws ParseException {
+
+        String eventUrl = amazonClient.getUrlFromFileName(event.getEventThumbnail());
+        EventDisplayDTO eventDisplayDTO = new EventDisplayDTO();
+        eventDisplayDTO.setEventId(event.getEventId());
+        eventDisplayDTO.setEventCreators(event.getEventCreators());
+        eventDisplayDTO.setEventType(event.getEventType());
+        eventDisplayDTO.setEventName(event.getEventName());
+        eventDisplayDTO.setEventThumbnail(eventUrl);
+        eventDisplayDTO.setEventStartDate(event.getEventStartDate());
+        eventDisplayDTO.setEventEndDate(event.getEventEndDate());
+        eventDisplayDTO.setEventPlace(event.getEventPlace());
+        eventDisplayDTO.setEventHostedUrl(event.getEventHostedUrl());
+        eventDisplayDTO.setNumberOfGuests(event.getNumberOfGuests());
+        eventDisplayDTO.setPaidEvent(event.isPaidEvent());
+        eventDisplayDTO.setPaidEventData(event.getPaidEventData());
+        eventDisplayDTO.setFreeEvent(event.isFreeEvent());
+        eventDisplayDTO.setEventPrivate(event.isEventPrivate());
+        eventDisplayDTO.setEventPublic(event.isEventPublic());
+        eventDisplayDTO.setEventSpecialGuests(event.getEventSpecialGuests());
+        eventDisplayDTO.setSpecialGuestEmails(event.getSpecialGuestEmails());
+        eventDisplayDTO.setGenaralGuestMails(event.getGenaralGuestMails());
+        eventDisplayDTO.setEventFrontPage(event.getEventFrontPage());
+        eventDisplayDTO.setEventComments(event.getEventComments());
+
+        Date eventDate = null;
+        Date today = null;
+        try {
+            eventDate = event.getEventEndDate();
+            today = Calendar.getInstance().getTime();
+
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            eventDate = sdf.parse(sdf.format(eventDate));
+            today = sdf.parse(sdf.format(today));
+        } catch (ParseException e) {
+            throw e;
+        }
+
+        if (eventDate.compareTo(today) < 0) {
+            eventDisplayDTO.setClosed(true);
+        }
+
+        return eventDisplayDTO;
     }
 
 
