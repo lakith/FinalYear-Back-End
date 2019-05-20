@@ -1,16 +1,16 @@
 package com.finalproj.finalproject.service.impl;
 
 import com.sendgrid.*;
+import org.springframework.scheduling.annotation.Async;
+
 import java.io.IOException;
 
 public class SendGridMailClient {
 
 
+
     public static void sendMail(String mailbody, String sendMail,String eventName) throws Exception {
-
-
-
-
+//                Thread newThread = new Thread(()->{
                 Email from = new Email("lakith1995@gmail.com");
                 String subject = eventName;
                 Email to = new Email(sendMail);
@@ -28,8 +28,14 @@ public class SendGridMailClient {
                     System.out.println(response.getBody());
                     System.out.println(response.getHeaders());
                 } catch (IOException ex) {
-                    throw new Exception(ex.getMessage());
+                    try {
+                        throw new Exception(ex.getMessage());
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
+//                });
+//                newThread.start();
     }
 
 }

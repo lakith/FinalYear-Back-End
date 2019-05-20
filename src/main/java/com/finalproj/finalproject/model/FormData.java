@@ -14,6 +14,8 @@ public class FormData {
 
     private String data;
 
+    private String invitationEmail;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_form_form_data")
     @JsonIgnore
@@ -44,5 +46,13 @@ public class FormData {
 
     public void setEventForm(EventForm eventForm) {
         this.eventForm = eventForm;
+    }
+
+    public String getInvitationEmail() {
+        return invitationEmail;
+    }
+
+    public void setInvitationEmail(String invitationEmail) {
+        this.invitationEmail = invitationEmail;
     }
 }

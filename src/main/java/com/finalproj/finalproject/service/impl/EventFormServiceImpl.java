@@ -41,6 +41,16 @@ public class EventFormServiceImpl implements EventFormService {
         if(!optionalEvent.isPresent()){
             return new ResponseEntity<>(new ResponseModel("Invalid event id",false), HttpStatus.BAD_REQUEST);
         }
+        EventForm eventForm = new EventForm();
+        Optional<EventForm> optionalEventForm = eventFormRepository.getEventFormByEventData(formRetriveDTO.getEventId());
+        if(optionalEventForm.isPresent()){
+            eventForm = optionalEventForm.get();
+            List<FormConfig> formConfigList = eventForm.getFormConfigs();
+
+            for(FormConfig formConfig : formConfigList){
+                formConfigRepository.delete(formConfig);
+            }
+        }
 
         List<FormConfigDTO> formConfigDTOS = formRetriveDTO.getFormConfigDTOS();
 
@@ -60,11 +70,8 @@ public class EventFormServiceImpl implements EventFormService {
             formConfig = formConfigRepository.save(formConfig);
             formConfigList.add(formConfig);
         }
-
-        EventForm eventForm = new EventForm();
         eventForm.setEvent(optionalEvent.get());
         eventForm.setFormConfigs(formConfigList);
-
         try {
             eventForm =  eventFormRepository.save(eventForm);
             return new ResponseEntity<>(eventForm,HttpStatus.OK);
@@ -75,7 +82,7 @@ public class EventFormServiceImpl implements EventFormService {
     }
 
     @Override
-    public ResponseEntity<?> saveEventFormData(int eventId,String eventData){
+    public ResponseEntity<?> saveEventFormData(int eventId,String eventData,String email){
 
         Optional<Event> optionalEvent = eventRepository.findById(eventId);
 
@@ -92,24 +99,22 @@ public class EventFormServiceImpl implements EventFormService {
             FormData formData = new FormData();
             formData.setEventForm(eventForm);
             formData.setData(eventData);
-
+            formData.setInvitationEmail(email);
             formData =  formDataRepository.save(formData);
-
             return new ResponseEntity<>(formData,HttpStatus.OK);
-
         } else {
             return new ResponseEntity<>(new ResponseModel("Save Form Config First",false),HttpStatus.BAD_REQUEST);
         }
     }
 
     public ResponseEntity<?> getEventForm(int eventId){
-        Optional<Event> optionalEvent = eventRepository.findById(eventId);
+        Optional<EventForm> optionalEventForm= eventFormRepository.getEventFormByEventData(eventId);
 
-        if(!optionalEvent.isPresent()){
+        if(!optionalEventForm.isPresent()){
             return new ResponseEntity<>(new ResponseModel("Invalid event Data.",false),HttpStatus.BAD_REQUEST);
         }
 
-        EventForm eventForm = optionalEvent.get().getEventForm();
+        EventForm eventForm = optionalEventForm.get();
         return new ResponseEntity<>(eventForm,HttpStatus.OK);
     }
 }

@@ -1,0 +1,22 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+</head>
+<body>
+
+<table>
+    <tr>
+        <th>Event Data</th>
+        <th>Email</th>
+        <th>Event Data ID</th>
+    </tr>
+    <th:block th:each="val: ${elements}">
+        <tr>
+            <td th:text="${val.data}"></td>
+            <td th:text="${val.invitationEmail}"></td>
+            <td th:text="${val.formDataId}"></td>
+        </tr>
+    </th:block>
+</table>
+</body>
+</html>

@@ -16,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/event-form")
+@CrossOrigin
 public class EventFormController {
 
     @Autowired
@@ -27,8 +28,8 @@ public class EventFormController {
     }
 
     @PostMapping("/save-event-data")
-    public ResponseEntity<?> saveEventData(@RequestParam String eventData, @RequestParam int eventId){
-        return eventFormService.saveEventFormData(eventId,eventData);
+    public ResponseEntity<?> saveEventData(@RequestParam String eventData, @RequestParam int eventId, @RequestParam String email){
+        return eventFormService.saveEventFormData(eventId,eventData,email);
     }
 
     @GetMapping

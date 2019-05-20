@@ -5,12 +5,13 @@ import com.amazonaws.auth.BasicAWSCredentials;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 
 @Configuration
 public class AWSConfig {
-
 
     String accessKey = "AKIAJGHJD6MBVIXIG6VA";
 
@@ -23,7 +24,6 @@ public class AWSConfig {
 //    String secret = "oWQgEA3BiSroBh3yfW0mhcyq1qZ1l/9cBq6wSK3m";
 //
 //    String region = "AP_SOUTHEAST_1";
-
 
 
     @Bean
@@ -39,6 +39,4 @@ public class AWSConfig {
 
         return s3Client;
     }
-
-
 }

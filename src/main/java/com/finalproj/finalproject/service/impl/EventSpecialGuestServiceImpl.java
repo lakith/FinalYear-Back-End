@@ -47,10 +47,8 @@ public class EventSpecialGuestServiceImpl implements EventSpecialGuestService {
         }
 
         Event event = optionalEvent.get();
-
         MailBody mailBody = new MailBody();
         String mailBodyMessage = mailBody.getSpecialGuestMailAddress(event.getEventName());
-
         List<SpecialGuestEmails> specialGuestEmails;
 
         if(event.getSpecialGuestEmails().isEmpty()){
@@ -66,7 +64,6 @@ public class EventSpecialGuestServiceImpl implements EventSpecialGuestService {
             guestEmail = specialGuestMailRepository.save(guestEmail);
             specialGuestEmails.add(guestEmail);
         }
-
         event.setSpecialGuestEmails(specialGuestEmails);
         try {
             event = eventRepository.save(event);

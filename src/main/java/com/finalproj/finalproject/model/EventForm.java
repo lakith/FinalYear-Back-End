@@ -1,5 +1,7 @@
 package com.finalproj.finalproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -13,9 +15,10 @@ public class EventForm {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="event_form_event_id")
+    @JsonIgnore
     private Event event;
 
-    @OneToMany(fetch = FetchType.LAZY,cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "form_config_event_form")
     private List<FormConfig> formConfigs;
 

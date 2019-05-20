@@ -124,6 +124,15 @@ public class EventServiceImpl implements EventService {
         }
     }
 
+/*
+    public ResponseEntity<?> publishEvent(int eventid){
+        Optional<Event> optionalEvent = eventRepository.findById(eventid);
+
+
+
+    }
+*/
+
     @SuppressWarnings("Duplicates")
     public ResponseEntity<?> getOneEventForDisplay(int eventId) throws ParseException {
 

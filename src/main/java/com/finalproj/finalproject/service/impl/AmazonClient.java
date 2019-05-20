@@ -20,13 +20,9 @@ public class AmazonClient {
     @Autowired
     private AmazonS3 s3client;
 
-
     String bucketName = "hospitel-paid-bucket";
-
     SimpleDateFormat sdf =new SimpleDateFormat("yyyyMMdd-hhmmsss");
     String date = sdf.format(new Date());
-
-
 
     @Async
     public String uploadFile(MultipartFile multipartFile, boolean enablePublicReadAccess) {

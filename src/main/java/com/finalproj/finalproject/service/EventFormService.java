@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface EventFormService {
 
-    ResponseEntity<?> saveEventFormData(int eventId, String eventData);
+    ResponseEntity<?> saveEventFormData(int eventId, String eventData, String email);
     ResponseEntity<?> saveEventConfigData(FormRetriveDTO formRetriveDTO) throws Exception;
     ResponseEntity<?> getEventForm(int eventId);
 }

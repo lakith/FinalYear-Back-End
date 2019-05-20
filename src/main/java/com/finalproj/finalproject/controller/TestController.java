@@ -2,10 +2,10 @@ package com.finalproj.finalproject.controller;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import com.finalproj.finalproject.service.impl.PDFGenarationServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
 
@@ -13,12 +13,22 @@ import java.io.IOException;
 @RequestMapping("test")
 public class TestController {
 
-    @PostMapping
-    public String testController(@RequestParam String testString,@RequestParam int id) throws IOException {
+    @Autowired
+    PDFGenarationServiceImpl pdfGenarationService;
 
+    @PostMapping
+    public String testController(@RequestParam String testString,@RequestParam int eventId,@RequestParam String email) throws IOException {
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(testString);
         System.out.println(testString);
         return "success";
+    }
+
+    @GetMapping(
+            value = "test",
+            produces = MediaType.APPLICATION_PDF_VALUE
+    )
+    public byte[] pdfTest() throws Exception {
+        return pdfGenarationService.createPdf();
     }
 }

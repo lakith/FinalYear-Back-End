@@ -1,5 +1,7 @@
 package com.finalproj.finalproject.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
@@ -72,7 +74,18 @@ public class Event {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "event_form")
+    @JsonIgnore
     private EventForm eventForm;
+
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_event_sub")
+    private List<EventSubEvents> eventSubEvents;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "event_payment_id")
+    private EventPeyment eventPeyment;
+
+    private boolean eventPublishToDisplay;
 
     public Event() {
     }
@@ -251,5 +264,29 @@ public class Event {
 
     public void setEventForm(EventForm eventForm) {
         this.eventForm = eventForm;
+    }
+
+    public List<EventSubEvents> getEventSubEvents() {
+        return eventSubEvents;
+    }
+
+    public void setEventSubEvents(List<EventSubEvents> eventSubEvents) {
+        this.eventSubEvents = eventSubEvents;
+    }
+
+    public EventPeyment getEventPeyment() {
+        return eventPeyment;
+    }
+
+    public void setEventPeyment(EventPeyment eventPeyment) {
+        this.eventPeyment = eventPeyment;
+    }
+
+    public boolean isEventPublishToDisplay() {
+        return eventPublishToDisplay;
+    }
+
+    public void setEventPublishToDisplay(boolean eventPublishToDisplay) {
+        this.eventPublishToDisplay = eventPublishToDisplay;
     }
 }
